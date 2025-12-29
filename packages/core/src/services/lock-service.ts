@@ -5,10 +5,7 @@
  */
 
 import { Lock, LockRequest, LockResult } from '../types/lock';
-
-export interface DatabaseClient {
-  query(sql: string, params: unknown[]): Promise<{ rows: any[] }>;
-}
+import { DatabaseClient } from '../lib/database';
 
 export class LockService {
   constructor(private db: DatabaseClient) {}

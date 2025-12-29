@@ -9,10 +9,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { EvidenceArtifact, RunManifest, EvidenceStoreConfig } from '../types/evidence';
 import { PhaseArtifact } from '../types/phase';
-
-export interface DatabaseClient {
-  query(sql: string, params: unknown[]): Promise<{ rows: any[] }>;
-}
+import { DatabaseClient } from '../lib/database';
 
 export class EvidenceStore {
   constructor(
@@ -187,9 +184,9 @@ export class EvidenceStore {
   }
 
   /**
-   * Read artifact from filesystem
+   * Read artifact from filesystem (reserved for future use)
    */
-  private async readFromStorage(storage_path: string): Promise<string> {
+  private async _readFromStorage(storage_path: string): Promise<string> {
     return await fs.readFile(storage_path, 'utf8');
   }
 }

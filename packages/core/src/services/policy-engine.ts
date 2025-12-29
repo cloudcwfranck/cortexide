@@ -11,7 +11,7 @@ import { StateSnapshot } from '../types/adapter';
 export class PolicyEngine {
   private currentBundle: PolicyBundle | null = null;
 
-  constructor(private bundlePath?: string) {}
+  constructor(private _bundlePath?: string) {}
 
   /**
    * Load OPA policy bundle
@@ -27,8 +27,8 @@ export class PolicyEngine {
    */
   async evaluatePolicies(
     blueprint: Blueprint,
-    currentState: StateSnapshot,
-    desiredState: Record<string, unknown>
+    _currentState: StateSnapshot,
+    _desiredState: Record<string, unknown>
   ): Promise<PolicyReport> {
     // v0.1: Mock policy evaluation - always pass baseline checks
     // v1.0: Real OPA evaluation with bundle.rego_code

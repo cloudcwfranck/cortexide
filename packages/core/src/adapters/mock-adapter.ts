@@ -25,7 +25,7 @@ export class MockAdapter implements ProviderAdapter {
   /**
    * Phase 2: Verify current state
    */
-  async verifyState(context: PhaseContext): Promise<StateSnapshot> {
+  async verifyState(_context: PhaseContext): Promise<StateSnapshot> {
     // Deterministic mock state snapshot
     return {
       timestamp: new Date(),
@@ -55,7 +55,7 @@ export class MockAdapter implements ProviderAdapter {
   /**
    * Phase 4: Plan provisioning
    */
-  async plan(context: PhaseContext): Promise<ProvisionPlan> {
+  async plan(_context: PhaseContext): Promise<ProvisionPlan> {
     return {
       actions: [
         {
@@ -83,7 +83,7 @@ export class MockAdapter implements ProviderAdapter {
   /**
    * Phase 4: Apply provisioning
    */
-  async apply(plan: ProvisionPlan): Promise<ProvisionResult> {
+  async apply(_plan: ProvisionPlan): Promise<ProvisionResult> {
     // Simulate provisioning delay (50-200ms for tests)
     await this.sleep(100);
 
@@ -102,7 +102,7 @@ export class MockAdapter implements ProviderAdapter {
    * Phase 5: Wait for readiness
    */
   async waitForReadiness(
-    resources: string[],
+    _resources: string[],
     checks: ReadinessCheck[]
   ): Promise<ReadinessReport> {
     // Simulate health check delay
@@ -137,7 +137,7 @@ export class MockAdapter implements ProviderAdapter {
   /**
    * Phase 7: Collect metrics
    */
-  async collectMetrics(config: MetricsConfig, window_seconds: number): Promise<MetricsWindow> {
+  async collectMetrics(_config: MetricsConfig, window_seconds: number): Promise<MetricsWindow> {
     // Simulate metrics collection delay
     await this.sleep(50);
 
@@ -165,7 +165,7 @@ export class MockAdapter implements ProviderAdapter {
   /**
    * Rollback to previous state
    */
-  async rollback(run_id: string, target_state: StateSnapshot): Promise<RollbackResult> {
+  async rollback(_run_id: string, _target_state: StateSnapshot): Promise<RollbackResult> {
     // Simulate rollback delay
     await this.sleep(100);
 

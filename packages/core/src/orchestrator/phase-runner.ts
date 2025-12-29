@@ -5,13 +5,9 @@
 import { PhaseContext, PhaseResult, PhaseExecutor, DEFAULT_RETRY_CONFIG } from '../types/phase';
 import { Run, RunState, PhaseStatus } from '../types/run';
 import { StateMachine } from './state-machine';
+import { DatabaseClient } from '../lib/database';
 
-export interface DatabaseClient {
-  // Minimal interface for database operations
-  query(sql: string, params: unknown[]): Promise<{ rows: unknown[] }>;
-}
-
-export interface EvidenceStore {
+export interface IEvidenceStore {
   // Minimal interface for evidence storage
   storeArtifact(
     run_id: string,
@@ -25,7 +21,7 @@ export class PhaseRunner {
   constructor(
     private executors: Map<number, PhaseExecutor>,
     private db: DatabaseClient,
-    private evidenceStore: EvidenceStore
+    private evidenceStore: IEvidenceStore
   ) {}
 
   /**

@@ -14,6 +14,9 @@ export * from './types/policy';
 export * from './types/blueprint';
 export * from './types/adapter';
 
+// Lib
+export * from './lib/database';
+
 // Orchestrator
 export * from './orchestrator/state-machine';
 export * from './orchestrator/phase-runner';
