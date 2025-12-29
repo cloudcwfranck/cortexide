@@ -11,7 +11,7 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 
 export default async function runsRoutes(server: FastifyInstance) {
   // POST /api/v1/runs/plan
-  server.post('/plan', async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post('/plan', async (_request: FastifyRequest, reply: FastifyReply) => {
     // TODO: Implement plan endpoint
     // - Validate blueprint_id + config
     // - Create runs row with dry_run=true in config
@@ -24,7 +24,7 @@ export default async function runsRoutes(server: FastifyInstance) {
   });
 
   // POST /api/v1/runs/execute
-  server.post('/execute', async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post('/execute', async (_request: FastifyRequest, reply: FastifyReply) => {
     // TODO: Implement execute endpoint
     // - Validate blueprint_id + config
     // - Create runs row
@@ -37,7 +37,7 @@ export default async function runsRoutes(server: FastifyInstance) {
   });
 
   // GET /api/v1/runs/:run_id
-  server.get('/:run_id', async (request: FastifyRequest, reply: FastifyReply) => {
+  server.get('/:run_id', async (_request: FastifyRequest, reply: FastifyReply) => {
     // TODO: Implement get run status
     // - Fetch run from DB
     // - Fetch phase_events
@@ -49,7 +49,7 @@ export default async function runsRoutes(server: FastifyInstance) {
   });
 
   // POST /api/v1/runs/:run_id/rollback
-  server.post('/:run_id/rollback', async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post('/:run_id/rollback', async (_request: FastifyRequest, reply: FastifyReply) => {
     // TODO: Implement rollback
     // - Validate run is in rollback-eligible state
     // - Call adapter.rollback()

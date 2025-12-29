@@ -4,7 +4,6 @@
 
 import Fastify, { FastifyInstance } from 'fastify';
 import cors from '@fastify/cors';
-import { logger } from './lib/logger';
 import { authMiddleware } from './middleware/auth';
 import { errorHandler } from './middleware/error-handler';
 
@@ -14,7 +13,20 @@ import evidenceRoutes from './routes/evidence';
 
 export async function createServer(): Promise<FastifyInstance> {
   const server = Fastify({
-    logger,
+    logger: {
+      level: process.env.LOG_LEVEL || 'info',
+      transport:
+        process.env.NODE_ENV !== 'production'
+          ? {
+              target: 'pino-pretty',
+              options: {
+                colorize: true,
+                translateTime: 'HH:MM:ss Z',
+                ignore: 'pid,hostname',
+              },
+            }
+          : undefined,
+    },
     requestIdLogLabel: 'reqId',
   });
 

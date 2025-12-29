@@ -3,14 +3,13 @@
  */
 
 import { FastifyError, FastifyRequest, FastifyReply } from 'fastify';
-import { logger } from '../lib/logger';
 
 export async function errorHandler(
   error: FastifyError,
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  logger.error(
+  request.log.error(
     {
       err: error,
       reqId: request.id,
