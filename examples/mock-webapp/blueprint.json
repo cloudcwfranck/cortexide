@@ -1,0 +1,83 @@
+{
+  "name": "mock-webapp",
+  "version": "1.0.0",
+  "provider": "mock",
+  "components": [
+    {
+      "id": "web-vm-pool",
+      "type": "compute.vmss",
+      "config": {
+        "instance_count": 2,
+        "vm_size": "Standard_D2s_v3",
+        "image": "ubuntu-20.04-lts"
+      }
+    },
+    {
+      "id": "load-balancer",
+      "type": "network.loadbalancer",
+      "config": {
+        "backend_pool": "web-vm-pool",
+        "health_probe": "/healthz"
+      }
+    }
+  ],
+  "traffic_strategy": {
+    "type": "canary",
+    "steps": [10, 25, 50, 100],
+    "soak_duration_seconds": 300
+  },
+  "readiness_checks": [
+    {
+      "component_id": "web-vm-pool",
+      "check_type": "http",
+      "endpoint": "http://{{component_id}}/healthz",
+      "timeout_seconds": 120,
+      "retries": 3
+    }
+  ],
+  "metrics_config": {
+    "sources": [
+      {
+        "type": "mock",
+        "config": {
+          "baseline_error_rate": 0.001,
+          "baseline_latency_p95_ms": 200
+        }
+      }
+    ],
+    "metrics": [
+      {
+        "name": "error_rate",
+        "query": "sum(rate(http_requests_total{status=~\"5..\"}[5m]))",
+        "unit": "percent"
+      },
+      {
+        "name": "latency_p95",
+        "query": "histogram_quantile(0.95, http_request_duration_seconds)",
+        "unit": "milliseconds"
+      }
+    ],
+    "observation_window_seconds": 300
+  },
+  "decision_rules": [
+    {
+      "metric": "error_rate",
+      "operator": ">",
+      "threshold": 0.01,
+      "action": "rollback",
+      "severity": "critical"
+    },
+    {
+      "metric": "latency_p95",
+      "operator": ">",
+      "threshold": 300,
+      "action": "rollback",
+      "severity": "critical"
+    }
+  ],
+  "policies_required": ["baseline-v1"],
+  "evidence_requirements": {
+    "retention_days": 90,
+    "sign_manifest": false
+  }
+}
