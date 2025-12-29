@@ -11,7 +11,7 @@ import { StateSnapshot } from '../types/adapter';
 export class PolicyEngine {
   private currentBundle: PolicyBundle | null = null;
 
-  constructor(private _bundlePath?: string) {}
+  constructor() {}
 
   /**
    * Load OPA policy bundle

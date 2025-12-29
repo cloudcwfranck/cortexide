@@ -115,7 +115,7 @@ export class LockService {
    * Should be called periodically (e.g., every minute)
    */
   async releaseExpiredLocks(): Promise<number> {
-    const result = await this.db.query(`SELECT release_expired_locks()`);
+    const result = await this.db.query(`SELECT release_expired_locks()`, []);
     return result.rows[0]?.release_expired_locks || 0;
   }
 }

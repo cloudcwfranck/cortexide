@@ -182,11 +182,4 @@ export class EvidenceStore {
     await fs.mkdir(dir, { recursive: true });
     await fs.writeFile(storage_path, content, 'utf8');
   }
-
-  /**
-   * Read artifact from filesystem (reserved for future use)
-   */
-  private async _readFromStorage(storage_path: string): Promise<string> {
-    return await fs.readFile(storage_path, 'utf8');
-  }
 }
