@@ -11,6 +11,28 @@ import { EvidenceArtifact, RunManifest, EvidenceStoreConfig } from '../types/evi
 import { PhaseArtifact } from '../types/phase';
 import { DatabaseClient } from '../lib/database';
 
+interface EvidenceArtifactRow {
+  artifact_id: string;
+  run_id: string;
+  tenant_id: string;
+  phase: number;
+  artifact_type: string;
+  storage_path: string;
+  hash_sha256: string;
+  size_bytes: number;
+  created_at: string;
+  metadata: Record<string, unknown>;
+}
+
+interface RunRow {
+  run_id: string;
+  tenant_id: string;
+  env_id: string;
+  started_at: string;
+  completed_at: string | null;
+  decision: string | null;
+}
+
 export class EvidenceStore {
   constructor(
     private config: EvidenceStoreConfig,
@@ -71,7 +93,7 @@ export class EvidenceStore {
    * Fetch all artifacts for a run
    */
   async fetchArtifacts(run_id: string): Promise<EvidenceArtifact[]> {
-    const result = await this.db.query(
+    const result = await this.db.query<EvidenceArtifactRow>(
       `SELECT * FROM evidence_artifacts WHERE run_id = $1 ORDER BY phase ASC, created_at ASC`,
       [run_id]
     );
@@ -95,7 +117,7 @@ export class EvidenceStore {
    */
   async generateManifest(run_id: string): Promise<RunManifest> {
     // Fetch run details
-    const runResult = await this.db.query(
+    const runResult = await this.db.query<RunRow>(
       `SELECT * FROM runs WHERE run_id = $1`,
       [run_id]
     );

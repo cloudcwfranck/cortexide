@@ -9,6 +9,13 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 
 const HARDCODED_API_KEY = 'cortexide-dev-key-v01';
 
+// Extend FastifyRequest to include tenant_id
+declare module 'fastify' {
+  interface FastifyRequest {
+    tenant_id?: string;
+  }
+}
+
 export async function authMiddleware(request: FastifyRequest, reply: FastifyReply) {
   // Skip auth for health check
   if (request.url === '/health') {
@@ -35,5 +42,5 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
 
   // v0.1: Set default tenant for single-tenant mode
   // v0.3+: Extract tenant_id from JWT claims
-  (request as any).tenant_id = 't_default';
+  request.tenant_id = 't_default';
 }

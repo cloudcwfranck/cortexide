@@ -3,5 +3,6 @@
  */
 
 export interface DatabaseClient {
-  query(sql: string, params: unknown[]): Promise<{ rows: any[] }>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  query<T = any>(sql: string, params: unknown[]): Promise<{ rows: T[] }>;
 }

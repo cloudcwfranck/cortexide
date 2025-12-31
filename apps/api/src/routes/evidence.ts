@@ -6,7 +6,7 @@
 
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 
-export default async function evidenceRoutes(server: FastifyInstance) {
+export default function evidenceRoutes(server: FastifyInstance) {
   // GET /api/v1/runs/:run_id/evidence
   server.get('/:run_id/evidence', async (_request: FastifyRequest, reply: FastifyReply) => {
     // TODO: Implement evidence fetch

@@ -28,7 +28,7 @@ export class PhaseRunner {
    * Execute a single run (phases 1-10)
    */
   async executeRun(run: Run): Promise<Run> {
-    let currentRun = { ...run };
+    const currentRun = { ...run };
 
     try {
       // Execute phases 1-10 in sequence
@@ -50,6 +50,7 @@ export class PhaseRunner {
           run_id: run.run_id,
           tenant_id: run.tenant_id,
           env_id: run.env_id,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
           blueprint: {} as any, // TODO: Load blueprint from DB
           config: run.config,
           phase,

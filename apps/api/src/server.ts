@@ -43,7 +43,7 @@ export async function createServer(): Promise<FastifyInstance> {
   await server.register(evidenceRoutes, { prefix: '/api/v1/runs' });
 
   // Health check
-  server.get('/health', async () => ({
+  server.get('/health', () => ({
     status: 'ok',
     timestamp: new Date().toISOString(),
   }));

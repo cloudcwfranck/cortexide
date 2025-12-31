@@ -7,6 +7,33 @@
 import { Lock, LockRequest, LockResult } from '../types/lock';
 import { DatabaseClient } from '../lib/database';
 
+interface AcquireLockResult {
+  success: boolean;
+  lock_id?: string;
+  error_message?: string;
+  current_holder?: string;
+}
+
+interface LockRow {
+  lock_id: string;
+  tenant_id: string;
+  env_id: string;
+  run_id: string;
+  acquired_at: string;
+  expires_at: string;
+  last_heartbeat_at: string;
+  released_at: string | null;
+  override_reason: string | null;
+}
+
+interface UpdateHeartbeatResult {
+  update_lock_heartbeat: boolean;
+}
+
+interface ReleaseExpiredLocksResult {
+  release_expired_locks: number;
+}
+
 export class LockService {
   constructor(private db: DatabaseClient) {}
 
@@ -14,7 +41,7 @@ export class LockService {
    * Acquire environment lock using Postgres advisory lock for atomicity
    */
   async acquireLock(request: LockRequest): Promise<LockResult> {
-    const result = await this.db.query(
+    const result = await this.db.query<AcquireLockResult>(
       `SELECT * FROM acquire_environment_lock($1, $2, $3, $4)`,
       [request.tenant_id, request.env_id, request.run_id, request.ttl_seconds]
     );
@@ -25,7 +52,7 @@ export class LockService {
       return {
         success: true,
         lock: {
-          lock_id: row.lock_id,
+          lock_id: row.lock_id!, // lock_id is always present when success is true
           tenant_id: request.tenant_id,
           env_id: request.env_id,
           run_id: request.run_id,
@@ -59,7 +86,7 @@ export class LockService {
    * Check if environment is locked
    */
   async checkLock(env_id: string): Promise<Lock | null> {
-    const result = await this.db.query(
+    const result = await this.db.query<LockRow>(
       `SELECT * FROM locks WHERE env_id = $1 AND released_at IS NULL LIMIT 1`,
       [env_id]
     );
@@ -96,7 +123,7 @@ export class LockService {
    * Update heartbeat (called by worker every 30s)
    */
   async updateHeartbeat(lock_id: string): Promise<boolean> {
-    const result = await this.db.query(`SELECT update_lock_heartbeat($1)`, [lock_id]);
+    const result = await this.db.query<UpdateHeartbeatResult>(`SELECT update_lock_heartbeat($1)`, [lock_id]);
     return result.rows[0]?.update_lock_heartbeat === true;
   }
 
@@ -115,7 +142,7 @@ export class LockService {
    * Should be called periodically (e.g., every minute)
    */
   async releaseExpiredLocks(): Promise<number> {
-    const result = await this.db.query(`SELECT release_expired_locks()`, []);
+    const result = await this.db.query<ReleaseExpiredLocksResult>(`SELECT release_expired_locks()`, []);
     return result.rows[0]?.release_expired_locks || 0;
   }
 }

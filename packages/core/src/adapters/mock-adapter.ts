@@ -25,9 +25,9 @@ export class MockAdapter implements ProviderAdapter {
   /**
    * Phase 2: Verify current state
    */
-  async verifyState(_context: PhaseContext): Promise<StateSnapshot> {
+  verifyState(_context: PhaseContext): Promise<StateSnapshot> {
     // Deterministic mock state snapshot
-    return {
+    return Promise.resolve({
       timestamp: new Date(),
       resources: [
         {
@@ -49,14 +49,14 @@ export class MockAdapter implements ProviderAdapter {
         },
       ],
       drift: [], // No drift in mock
-    };
+    });
   }
 
   /**
    * Phase 4: Plan provisioning
    */
-  async plan(_context: PhaseContext): Promise<ProvisionPlan> {
-    return {
+  plan(_context: PhaseContext): Promise<ProvisionPlan> {
+    return Promise.resolve({
       actions: [
         {
           action: 'create',
@@ -77,7 +77,7 @@ export class MockAdapter implements ProviderAdapter {
         },
       ],
       estimated_duration_ms: 180000, // 3 minutes
-    };
+    });
   }
 
   /**

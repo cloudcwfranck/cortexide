@@ -16,16 +16,17 @@ export class PolicyEngine {
   /**
    * Load OPA policy bundle
    */
-  async loadBundle(bundle: PolicyBundle): Promise<void> {
+  loadBundle(bundle: PolicyBundle): Promise<void> {
     // v0.1: Store bundle in memory
     // v1.0: Use @open-policy-agent/opa-wasm for real evaluation
     this.currentBundle = bundle;
+    return Promise.resolve();
   }
 
   /**
    * Evaluate policies (v0.1: baseline mock evaluation)
    */
-  async evaluatePolicies(
+  evaluatePolicies(
     blueprint: Blueprint,
     _currentState: StateSnapshot,
     _desiredState: Record<string, unknown>
@@ -70,13 +71,13 @@ export class PolicyEngine {
       });
     }
 
-    return {
+    return Promise.resolve({
       result: violations.length === 0 ? 'pass' : 'fail',
       evaluated_policies,
       violations,
       warnings: [],
       evaluated_at: new Date(),
-    };
+    });
   }
 
   /**

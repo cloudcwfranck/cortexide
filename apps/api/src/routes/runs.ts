@@ -9,7 +9,7 @@
 
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 
-export default async function runsRoutes(server: FastifyInstance) {
+export default function runsRoutes(server: FastifyInstance) {
   // POST /api/v1/runs/plan
   server.post('/plan', async (_request: FastifyRequest, reply: FastifyReply) => {
     // TODO: Implement plan endpoint
