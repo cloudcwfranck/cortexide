@@ -10,9 +10,12 @@ CREATE TABLE locks (
   released_at TIMESTAMPTZ,
   override_reason TEXT,
 
-  CONSTRAINT valid_ttl CHECK (expires_at > acquired_at),
-  CONSTRAINT single_active_lock UNIQUE (env_id) WHERE (released_at IS NULL)
+  CONSTRAINT valid_ttl CHECK (expires_at > acquired_at)
 );
+
+-- Partial unique index to enforce single active lock per environment
+-- (replaces CONSTRAINT single_active_lock which doesn't support WHERE in CREATE TABLE)
+CREATE UNIQUE INDEX idx_locks_single_active ON locks(env_id) WHERE released_at IS NULL;
 
 -- Indexes
 CREATE INDEX idx_locks_env ON locks(env_id);
